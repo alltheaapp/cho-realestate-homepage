@@ -62,7 +62,7 @@ async function saveContentToSupabase() {
     for (const [key, value] of Object.entries(data)) {
       await supabase
         .from('site_content')
-        .upsert({ key, value }, { onConflict: 'key' });
+        .upsert({ key, value });
     }
 
     savedContent = data;
