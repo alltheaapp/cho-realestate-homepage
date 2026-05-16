@@ -108,19 +108,21 @@ window.DEFAULT_REVIEWS = [
 
 async function getSiteContent() {
   try {
+    console.log("🔍 Loading content from Supabase...");
     const { data, error } = await supabase
       .from('site_content')
       .select('key, value');
 
     if (error) throw error;
 
+    console.log("✅ Loaded", data?.length || 0, "items from Supabase");
     const content = {};
     data?.forEach(row => {
       content[row.key] = row.value;
     });
     return { ...window.SITE_CONTENT, ...content };
   } catch (err) {
-    console.warn('Supabase fetch failed, using defaults:', err.message);
+    console.warn('❌ Supabase fetch failed:', err.message);
     return { ...window.SITE_CONTENT };
   }
 }

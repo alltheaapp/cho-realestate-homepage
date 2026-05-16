@@ -4,6 +4,8 @@ const SUPABASE_URL = "https://dwbkwotldcvdzcmfassa.supabase.co";
 const SUPABASE_KEY = "sb_publishable_6nugV1vM4g-D1AMPQTSPWw_6oIYdbXs";
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
+console.log("✅ Admin: Supabase 초기화 완료", { SUPABASE_URL });
+
 const form = document.querySelector("[data-admin-form]");
 const exportButton = document.querySelector("[data-export]");
 const resetButton = document.querySelector("[data-reset]");
@@ -59,17 +61,22 @@ async function saveContentToSupabase() {
 
   try {
     const data = collectFormData();
+    console.log("📝 Saving data:", Object.keys(data).length, "items");
 
     for (const [key, value] of Object.entries(data)) {
-      await supabase
+      const { error } = await supabase
         .from('site_content')
         .upsert({ key, value });
+
+      if (error) {
+        console.error(`❌ Failed to save ${key}:`, error);
+      }
     }
 
     savedContent = data;
     console.log("✅ Content saved to Supabase");
   } catch (err) {
-    console.error("❌ Save failed:", err.message);
+    console.error("❌ Save failed:", err.message, err);
   } finally {
     isLoading = false;
   }
