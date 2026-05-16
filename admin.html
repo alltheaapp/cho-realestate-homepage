@@ -17,6 +17,7 @@
         </div>
         <div class="admin-actions">
           <a class="secondary-button admin-link" href="index.html">홈 보기</a>
+          <button type="button" data-check-sync>🔄 상태 확인</button>
           <button type="button" data-export>JSON 내보내기</button>
           <button type="button" class="danger" data-reset>초기화</button>
         </div>
@@ -36,6 +37,16 @@
       </section>
 
       <textarea class="export-box" data-export-box readonly placeholder="JSON 내보내기 결과가 여기에 표시됩니다."></textarea>
+
+      <section style="margin-top: 40px; padding: 20px; background: #f5f5f5; border-radius: 8px; border-left: 4px solid #3B82F6;">
+        <h2 style="margin-top: 0; color: #333;">동기화 상태</h2>
+        <div id="sync-info" style="font-size: 14px; line-height: 1.8; color: #666;">
+          <p><strong>Supabase:</strong> <span id="sync-supabase">확인 중...</span></p>
+          <p><strong>마지막 저장:</strong> <span id="sync-time">없음</span></p>
+          <p><strong>저장된 항목:</strong> <span id="sync-items">0</span>개</p>
+          <p><strong>저장된 후기:</strong> <span id="sync-reviews">0</span>개</p>
+        </div>
+      </section>
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.0"></script>

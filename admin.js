@@ -4,10 +4,12 @@ const resetButton = document.querySelector("[data-reset]");
 const exportBox = document.querySelector("[data-export-box]");
 const reviewAdminList = document.querySelector("[data-review-admin-list]");
 const addReviewButton = document.querySelector("[data-add-review]");
+const checkSyncButton = document.querySelector("[data-check-sync]");
 
 let savedContent = {};
 let reviews = [];
 let isLoading = false;
+let lastSaveTime = null;
 
 function isLongField(key, value) {
   return key.includes("lead") || key.includes("summary") || key.includes("body") || key.includes("description") || value.length > 55;
@@ -83,11 +85,25 @@ async function saveContentToSupabase() {
     }
 
     savedContent = data;
+    lastSaveTime = new Date();
+    updateSyncInfo();
   } catch (err) {
     console.error("❌ 저장 실패:", err.message);
   } finally {
     isLoading = false;
   }
+}
+
+function updateSyncInfo() {
+  const timeEl = document.getElementById("sync-time");
+  const itemsEl = document.getElementById("sync-items");
+  const reviewsEl = document.getElementById("sync-reviews");
+
+  if (lastSaveTime) {
+    if (timeEl) timeEl.textContent = lastSaveTime.toLocaleString("ko-KR");
+  }
+  if (itemsEl) itemsEl.textContent = Object.keys(savedContent).length;
+  if (reviewsEl) reviewsEl.textContent = reviews.length;
 }
 
 async function saveReviewsToLocalStorage() {
@@ -120,6 +136,8 @@ async function saveReviewsToLocalStorage() {
     localStorage.setItem("choSiteReviews", JSON.stringify(reviews));
   }
 
+  lastSaveTime = new Date();
+  updateSyncInfo();
   console.log("✅ 후기 저장 완료");
 }
 
@@ -196,6 +214,14 @@ resetButton?.addEventListener("click", () => {
   location.reload();
 });
 
+checkSyncButton?.addEventListener("click", async () => {
+  checkSyncButton.disabled = true;
+  checkSyncButton.textContent = "확인 중...";
+  await checkSyncStatus();
+  checkSyncButton.disabled = false;
+  checkSyncButton.textContent = "🔄 상태 확인";
+});
+
 function updateSyncStatus() {
   const statusEl = document.getElementById("sync-status");
   if (!statusEl) return;
@@ -206,6 +232,50 @@ function updateSyncStatus() {
   } else {
     statusEl.textContent = "Supabase 연결 대기 중... (3초 타임아웃)";
     statusEl.style.color = "orange";
+  }
+}
+
+async function checkSyncStatus() {
+  const supabaseStatus = document.getElementById("sync-supabase");
+  const timeEl = document.getElementById("sync-time");
+  const itemsEl = document.getElementById("sync-items");
+  const reviewsEl = document.getElementById("sync-reviews");
+
+  if (!supabaseStatus) return;
+
+  try {
+    if (window.supabaseClient && window.supabaseReady) {
+      supabaseStatus.textContent = "✅ 연결됨";
+      supabaseStatus.style.color = "green";
+
+      // 데이터 개수 확인
+      const { data: contentData, error: contentError } = await window.supabaseClient
+        .from('site_content')
+        .select('id', { count: 'exact' });
+
+      const { data: reviewData, error: reviewError } = await window.supabaseClient
+        .from('site_reviews')
+        .select('id', { count: 'exact' });
+
+      if (!contentError && contentData) {
+        itemsEl.textContent = contentData.length;
+      }
+      if (!reviewError && reviewData) {
+        reviewsEl.textContent = reviewData.length;
+      }
+    } else {
+      supabaseStatus.textContent = "❌ 미연결 (localStorage 사용)";
+      supabaseStatus.style.color = "red";
+      itemsEl.textContent = "0";
+      reviewsEl.textContent = "0";
+    }
+
+    if (lastSaveTime) {
+      timeEl.textContent = lastSaveTime.toLocaleString("ko-KR");
+    }
+  } catch (err) {
+    supabaseStatus.textContent = `❌ 오류: ${err.message}`;
+    supabaseStatus.style.color = "red";
   }
 }
 
@@ -267,6 +337,8 @@ async function init() {
 
     renderAdminForm();
     renderReviewAdmin();
+    updateSyncInfo();
+    checkSyncStatus();
 
     console.log("✅ Admin panel loaded");
   } catch (err) {
