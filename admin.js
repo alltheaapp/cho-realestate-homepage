@@ -154,21 +154,14 @@ exportButton?.addEventListener("click", async () => {
   };
   const jsonStr = JSON.stringify(data, null, 2);
   exportBox.value = jsonStr;
-  copyJsonButton.style.display = "block";
-  console.log("✅ JSON exported");
-});
 
-copyJsonButton?.addEventListener("click", async () => {
   try {
-    await navigator.clipboard.writeText(exportBox.value);
-    const originalText = copyJsonButton.textContent;
-    copyJsonButton.textContent = "✓ 복사됨!";
-    setTimeout(() => {
-      copyJsonButton.textContent = originalText;
-    }, 2000);
+    await navigator.clipboard.writeText(jsonStr);
+    alert("✅ JSON이 클립보드에 복사되었습니다!");
   } catch (err) {
-    alert("복사 실패: " + err.message);
+    alert("텍스트 영역에서 직접 복사하세요.");
   }
+  console.log("✅ JSON exported");
 });
 
 resetButton?.addEventListener("click", async () => {
