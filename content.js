@@ -100,39 +100,13 @@ window.DEFAULT_REVIEWS = [
   }
 ];
 
-async function getSiteContent() {
-  try {
-    // Supabase에서 먼저 시도
-    if (window.supabaseClient) {
-      const { data, error } = await window.supabaseClient
-        .from('site_content')
-        .select('key, value');
-
-      if (!error && data?.length > 0) {
-        const content = {};
-        data.forEach(row => content[row.key] = row.value);
-        console.log("✅ Loaded from Supabase:", data.length, "items");
-        return { ...window.SITE_CONTENT, ...content };
-      }
-    }
-  } catch (err) {
-    console.warn("Supabase read failed:", err.message);
-  }
-
-  // localStorage 폴백
+function getSiteContent() {
   try {
     const saved = JSON.parse(localStorage.getItem("choSiteContent") || "{}");
-    if (Object.keys(saved).length > 0) {
-      console.log("✅ Loaded from localStorage");
-      return { ...window.SITE_CONTENT, ...saved };
-    }
-  } catch (err) {
-    console.warn("localStorage read failed");
+    return { ...window.SITE_CONTENT, ...saved };
+  } catch {
+    return { ...window.SITE_CONTENT };
   }
-
-  // 기본값
-  console.log("✅ Using defaults");
-  return { ...window.SITE_CONTENT };
 }
 
 function getSiteReviews() {
@@ -173,8 +147,8 @@ function renderSiteReviews() {
   document.dispatchEvent(new CustomEvent("site-reviews-rendered"));
 }
 
-async function applySiteContent() {
-  const content = await getSiteContent();
+function applySiteContent() {
+  const content = getSiteContent();
 
   document.querySelectorAll("[data-content]").forEach((node) => {
     const key = node.getAttribute("data-content");
@@ -195,7 +169,8 @@ async function applySiteContent() {
   });
 }
 
-document.addEventListener("DOMContentLoaded", async () => {
-  await applySiteContent();
+document.addEventListener("DOMContentLoaded", () => {
+  applySiteContent();
   renderSiteReviews();
+  console.log("✅ Page loaded");
 });
