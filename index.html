@@ -301,6 +301,33 @@
       </a>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.0"></script>
+    <script>
+      window.SUPABASE_URL = "https://dwbkwotldcvdzcmfassa.supabase.co";
+      window.SUPABASE_KEY = "sb_publishable_6nugV1vM4g-D1AMPQTSPWw_6oIYdbXs";
+      window.supabaseReady = false;
+
+      async function initSupabase() {
+        const maxWait = 3000;
+        const startTime = Date.now();
+        while (!window.supabase && Date.now() - startTime < maxWait) {
+          await new Promise(resolve => setTimeout(resolve, 50));
+        }
+
+        if (window.supabase) {
+          try {
+            window.supabaseClient = window.supabase.createClient(window.SUPABASE_URL, window.SUPABASE_KEY);
+            window.supabaseReady = true;
+            console.log("✅ Supabase initialized");
+          } catch (err) {
+            console.error("❌ Supabase init error:", err);
+          }
+        } else {
+          console.warn("⚠️ Supabase CDN failed to load, using localStorage fallback");
+        }
+      }
+      initSupabase();
+    </script>
     <script src="content.js"></script>
     <script src="script.js"></script>
   </body>

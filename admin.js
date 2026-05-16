@@ -47,25 +47,34 @@ function collectReviews() {
 }
 
 async function saveContentToSupabase() {
-  if (isLoading || !window.supabaseClient) return;
+  if (isLoading) return;
   isLoading = true;
 
   try {
     const data = collectFormData();
-    console.log("💾 Saving to Supabase...", Object.keys(data).length, "items");
 
-    for (const [key, value] of Object.entries(data)) {
-      const { error } = await window.supabaseClient
-        .from('site_content')
-        .upsert({ key, value });
-
-      if (error) {
-        console.error(`❌ Failed to save ${key}:`, error.message);
+    if (window.supabaseClient && window.supabaseReady) {
+      console.log("💾 Saving to Supabase...", Object.keys(data).length, "items");
+      for (const [key, value] of Object.entries(data)) {
+        try {
+          const { error } = await window.supabaseClient
+            .from('site_content')
+            .upsert({ key, value });
+          if (error) {
+            console.error(`❌ Supabase save ${key}:`, error.message);
+          }
+        } catch (err) {
+          console.error(`❌ Supabase save ${key}:`, err.message);
+        }
       }
+      console.log("✅ Content saved to Supabase");
+    } else {
+      console.log("💾 Saving to localStorage...", Object.keys(data).length, "items");
+      localStorage.setItem("choSiteContent", JSON.stringify(data));
+      console.log("✅ Content saved to localStorage");
     }
 
     savedContent = data;
-    console.log("✅ Content saved to Supabase");
   } catch (err) {
     console.error("❌ Save failed:", err.message);
   } finally {

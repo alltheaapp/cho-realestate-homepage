@@ -100,7 +100,26 @@ window.DEFAULT_REVIEWS = [
   }
 ];
 
-function getSiteContent() {
+async function getSiteContent() {
+  try {
+    if (window.supabaseClient && window.supabaseReady) {
+      const { data } = await window.supabaseClient
+        .from('site_content')
+        .select('key, value');
+
+      if (data && data.length) {
+        const content = {};
+        data.forEach(row => {
+          content[row.key] = row.value;
+        });
+        console.log("📦 Loaded content from Supabase");
+        return { ...window.SITE_CONTENT, ...content };
+      }
+    }
+  } catch (err) {
+    console.warn("⚠️ Supabase load error:", err.message);
+  }
+
   try {
     const saved = JSON.parse(localStorage.getItem("choSiteContent") || "{}");
     return { ...window.SITE_CONTENT, ...saved };
@@ -109,7 +128,23 @@ function getSiteContent() {
   }
 }
 
-function getSiteReviews() {
+async function getSiteReviews() {
+  try {
+    if (window.supabaseClient && window.supabaseReady) {
+      const { data } = await window.supabaseClient
+        .from('site_reviews')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (data && data.length) {
+        console.log("📦 Loaded reviews from Supabase");
+        return data;
+      }
+    }
+  } catch (err) {
+    console.warn("⚠️ Supabase reviews load error:", err.message);
+  }
+
   try {
     const saved = JSON.parse(localStorage.getItem("choSiteReviews") || "[]");
     return Array.isArray(saved) && saved.length ? saved : [...window.DEFAULT_REVIEWS];
@@ -169,8 +204,43 @@ function applySiteContent() {
   });
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-  applySiteContent();
-  renderSiteReviews();
+document.addEventListener("DOMContentLoaded", async () => {
+  const content = await getSiteContent();
+  const reviews = await getSiteReviews();
+
+  document.querySelectorAll("[data-content]").forEach((node) => {
+    const key = node.getAttribute("data-content");
+    if (!key || content[key] === undefined) return;
+    if (node.getAttribute("data-content-html") === "true") {
+      node.innerHTML = content[key];
+    } else {
+      node.textContent = content[key];
+    }
+  });
+
+  document.querySelectorAll("[data-content-attr]").forEach((node) => {
+    const value = node.getAttribute("data-content-attr") || "";
+    const [key, attr] = value.split(":");
+    if (key && attr && content[key] !== undefined) {
+      node.setAttribute(attr, content[key]);
+    }
+  });
+
+  const grids = document.querySelectorAll("[data-review-grid], [data-reviews-list]");
+  grids.forEach((grid) => {
+    grid.innerHTML = reviews.map((review) => `
+      <article class="review-card">
+        <div class="stars" aria-label="별점 5점">★★★★★</div>
+        <h3>${escapeHtml(review.title)}</h3>
+        <p>${escapeHtml(review.body)}</p>
+        <div class="reviewer">
+          ${review.image ? `<img src="${escapeHtml(review.image)}" alt="${escapeHtml(review.name)} 프로필">` : ""}
+          <span><strong>${escapeHtml(review.name)}</strong><small>${escapeHtml(review.meta)}</small></span>
+        </div>
+      </article>
+    `).join("");
+  });
+
+  document.dispatchEvent(new CustomEvent("site-reviews-rendered"));
   console.log("✅ Page loaded");
 });

@@ -9,6 +9,33 @@
       <section class="detail-layout"><article class="detail-main"><h2>숫자로 확인하는 안전한 인수</h2><p>프랜차이즈 매장은 브랜드 인지도만 보고 결정하면 위험합니다. 실제 매출, 원가, 인건비, 임대료, 본사 조건을 함께 확인해야 합니다.</p><div class="blue-panel"><h3>검토 항목</h3><ul><li>포스 매출과 입금 내역 교차 확인</li><li>본사 양도 승인 조건 검토</li><li>권리금 산정 근거 정리</li><li>시설 인수 범위와 원상복구 리스크 확인</li></ul></div></article><aside class="detail-side"><h2>양도양수 상담</h2><p>검토 중인 매장 자료가 있다면 상담 시 함께 확인할 수 있습니다.</p><a class="primary-button" href="index.html#contact">상담 예약</a></aside></section>
     </main>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.0/+esm"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.0"></script>
+    <script>
+      window.SUPABASE_URL = "https://dwbkwotldcvdzcmfassa.supabase.co";
+      window.SUPABASE_KEY = "sb_publishable_6nugV1vM4g-D1AMPQTSPWw_6oIYdbXs";
+      window.supabaseReady = false;
+
+      async function initSupabase() {
+        const maxWait = 3000;
+        const startTime = Date.now();
+        while (!window.supabase && Date.now() - startTime < maxWait) {
+          await new Promise(resolve => setTimeout(resolve, 50));
+        }
+
+        if (window.supabase) {
+          try {
+            window.supabaseClient = window.supabase.createClient(window.SUPABASE_URL, window.SUPABASE_KEY);
+            window.supabaseReady = true;
+            console.log("✅ Supabase initialized");
+          } catch (err) {
+            console.error("❌ Supabase init error:", err);
+          }
+        } else {
+          console.warn("⚠️ Supabase CDN failed to load, using localStorage fallback");
+        }
+      }
+      initSupabase();
+    </script>
     <script src="content.js"></script><script src="script.js"></script>
   </body>
 </html>
