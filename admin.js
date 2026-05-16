@@ -10,6 +10,7 @@ const resetButton = document.querySelector("[data-reset]");
 const exportBox = document.querySelector("[data-export-box]");
 const reviewAdminList = document.querySelector("[data-review-admin-list]");
 const addReviewButton = document.querySelector("[data-add-review]");
+const copyJsonButton = document.querySelector("[data-copy-json]");
 
 let savedContent = {};
 let reviews = [];
@@ -151,8 +152,23 @@ exportButton?.addEventListener("click", async () => {
     content: collectFormData(),
     reviews: collectReviews()
   };
-  exportBox.value = JSON.stringify(data, null, 2);
+  const jsonStr = JSON.stringify(data, null, 2);
+  exportBox.value = jsonStr;
+  copyJsonButton.style.display = "block";
   console.log("✅ JSON exported");
+});
+
+copyJsonButton?.addEventListener("click", async () => {
+  try {
+    await navigator.clipboard.writeText(exportBox.value);
+    const originalText = copyJsonButton.textContent;
+    copyJsonButton.textContent = "✓ 복사됨!";
+    setTimeout(() => {
+      copyJsonButton.textContent = originalText;
+    }, 2000);
+  } catch (err) {
+    alert("복사 실패: " + err.message);
+  }
 });
 
 resetButton?.addEventListener("click", async () => {
