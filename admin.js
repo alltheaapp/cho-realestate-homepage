@@ -54,38 +54,73 @@ async function saveContentToSupabase() {
     const data = collectFormData();
 
     if (window.supabaseClient && window.supabaseReady) {
-      console.log("💾 Saving to Supabase...", Object.keys(data).length, "items");
+      console.log("💾 Supabase 저장 시작...", Object.keys(data).length, "개 항목");
+      let successCount = 0;
+      let errorCount = 0;
+
       for (const [key, value] of Object.entries(data)) {
         try {
           const { error } = await window.supabaseClient
             .from('site_content')
             .upsert({ key, value });
           if (error) {
-            console.error(`❌ Supabase save ${key}:`, error.message);
+            console.error(`❌ ${key}:`, error.message);
+            errorCount++;
+          } else {
+            successCount++;
           }
         } catch (err) {
-          console.error(`❌ Supabase save ${key}:`, err.message);
+          console.error(`❌ ${key}:`, err.message);
+          errorCount++;
         }
       }
-      console.log("✅ Content saved to Supabase");
+
+      console.log(`✅ Supabase 저장 완료: 성공 ${successCount}, 실패 ${errorCount}`);
     } else {
-      console.log("💾 Saving to localStorage...", Object.keys(data).length, "items");
+      console.log("💾 Supabase 미연결, localStorage에 저장...", Object.keys(data).length, "개 항목");
       localStorage.setItem("choSiteContent", JSON.stringify(data));
-      console.log("✅ Content saved to localStorage");
+      console.log("✅ localStorage에 저장 완료");
     }
 
     savedContent = data;
   } catch (err) {
-    console.error("❌ Save failed:", err.message);
+    console.error("❌ 저장 실패:", err.message);
   } finally {
     isLoading = false;
   }
 }
 
-function saveReviewsToLocalStorage() {
+async function saveReviewsToLocalStorage() {
   reviews = collectReviews();
-  localStorage.setItem("choSiteReviews", JSON.stringify(reviews));
-  console.log("✅ Reviews saved");
+
+  if (window.supabaseClient && window.supabaseReady) {
+    console.log("💾 Supabase에 후기 저장 중...");
+    try {
+      // 기존 후기 모두 삭제
+      await window.supabaseClient.from('site_reviews').delete().gt('id', 0);
+
+      // 새 후기 저장
+      if (reviews.length > 0) {
+        const { error } = await window.supabaseClient
+          .from('site_reviews')
+          .insert(reviews);
+
+        if (error) {
+          console.error("❌ 후기 저장 실패:", error.message);
+          throw error;
+        }
+      }
+      console.log(`✅ Supabase에 ${reviews.length}개 후기 저장됨`);
+    } catch (err) {
+      console.warn("⚠️ Supabase 저장 실패, localStorage 사용:", err.message);
+      localStorage.setItem("choSiteReviews", JSON.stringify(reviews));
+    }
+  } else {
+    console.log("💾 Supabase 미연결, localStorage에 저장...");
+    localStorage.setItem("choSiteReviews", JSON.stringify(reviews));
+  }
+
+  console.log("✅ 후기 저장 완료");
 }
 
 function renderReviewAdmin() {
@@ -161,16 +196,74 @@ resetButton?.addEventListener("click", () => {
   location.reload();
 });
 
+function updateSyncStatus() {
+  const statusEl = document.getElementById("sync-status");
+  if (!statusEl) return;
+
+  if (window.supabaseClient && window.supabaseReady) {
+    statusEl.textContent = "모든 기기에서 실시간 동기화됩니다 ✅";
+    statusEl.style.color = "green";
+  } else {
+    statusEl.textContent = "Supabase 연결 대기 중... (3초 타임아웃)";
+    statusEl.style.color = "orange";
+  }
+}
+
 async function init() {
   try {
-    // localStorage에서 먼저 로드
-    try {
-      const saved = JSON.parse(localStorage.getItem("choSiteContent") || "{}");
-      savedContent = saved;
-    } catch (e) {}
+    // Supabase 초기화 대기 (최대 3초)
+    let waited = 0;
+    while (!window.supabaseReady && waited < 3000) {
+      await new Promise(resolve => setTimeout(resolve, 100));
+      waited += 100;
+    }
 
-    const saved = JSON.parse(localStorage.getItem("choSiteReviews") || "[]");
-    reviews = Array.isArray(saved) ? saved : [];
+    updateSyncStatus();
+
+    // Supabase에서 데이터 로드
+    if (window.supabaseClient && window.supabaseReady) {
+      console.log("📦 Supabase에서 콘텐츠 로드 중...");
+      try {
+        const { data } = await window.supabaseClient
+          .from('site_content')
+          .select('key, value');
+
+        if (data && data.length) {
+          data.forEach(row => {
+            savedContent[row.key] = row.value;
+          });
+          console.log(`✅ Supabase에서 ${data.length}개 항목 로드됨`);
+        }
+      } catch (err) {
+        console.warn("⚠️ Supabase 로드 실패:", err.message);
+      }
+
+      try {
+        const { data } = await window.supabaseClient
+          .from('site_reviews')
+          .select('*')
+          .order('created_at', { ascending: false });
+
+        if (data && data.length) {
+          reviews = data;
+          console.log(`✅ Supabase에서 ${data.length}개 후기 로드됨`);
+        }
+      } catch (err) {
+        console.warn("⚠️ 후기 로드 실패:", err.message);
+      }
+    } else {
+      // Supabase 실패 시 localStorage 폴백
+      console.warn("⚠️ Supabase 연결 실패, localStorage 사용");
+      try {
+        const saved = JSON.parse(localStorage.getItem("choSiteContent") || "{}");
+        savedContent = saved;
+      } catch (e) {}
+
+      try {
+        const saved = JSON.parse(localStorage.getItem("choSiteReviews") || "[]");
+        reviews = Array.isArray(saved) ? saved : [];
+      } catch (e) {}
+    }
 
     renderAdminForm();
     renderReviewAdmin();
