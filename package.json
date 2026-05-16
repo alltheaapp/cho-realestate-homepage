@@ -1,0 +1,11 @@
+{
+  "name": "cho-realestate-homepage",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "deploy": "wrangler pages deploy . --project-name cho-realestate-homepage"
+  },
+  "devDependencies": {
+    "wrangler": "^4.92.0"
+  }
+}

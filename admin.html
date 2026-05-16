@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>홈페이지 문구 관리자 | 조광현 공인중개사</title>
+    <meta name="robots" content="noindex,nofollow">
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body class="admin-body">
+    <main class="admin-shell">
+      <section class="admin-header">
+        <div>
+          <p class="hero-badge"><span></span> Content Admin</p>
+          <h1>홈페이지 문구 관리자</h1>
+          <p>문구를 수정하고 저장하면 이 브라우저에서 홈페이지에 바로 반영됩니다. 실제 배포본에 고정하려면 JSON을 내보내서 반영하면 됩니다.</p>
+        </div>
+        <div class="admin-actions">
+          <a class="secondary-button admin-link" href="index.html">홈 보기</a>
+          <button type="button" data-export>JSON 내보내기</button>
+          <button type="button" class="danger" data-reset>초기화</button>
+        </div>
+      </section>
+
+      <form class="admin-form" data-admin-form></form>
+
+      <section class="review-admin-panel">
+        <div class="review-admin-head">
+          <div>
+            <h2>계약후기 관리</h2>
+            <p>후기를 추가하거나 수정하면 메인 페이지와 고객후기 페이지에 바로 반영됩니다.</p>
+          </div>
+          <button type="button" data-add-review>후기 추가</button>
+        </div>
+        <div class="review-admin-list" data-review-admin-list></div>
+      </section>
+
+      <textarea class="export-box" data-export-box readonly placeholder="JSON 내보내기 결과가 여기에 표시됩니다."></textarea>
+    </main>
+
+    <script src="content.js"></script>
+    <script src="admin.js"></script>
+  </body>
+</html>
