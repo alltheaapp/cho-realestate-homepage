@@ -5,8 +5,9 @@ const exportBox = document.querySelector("[data-export-box]");
 const reviewAdminList = document.querySelector("[data-review-admin-list]");
 const addReviewButton = document.querySelector("[data-add-review]");
 
-let savedContent = getSiteContent();
-let reviews = getSiteReviews();
+let savedContent = {};
+let reviews = [];
+let isLoading = false;
 
 function isLongField(key, value) {
   return key.includes("lead") || key.includes("summary") || key.includes("body") || key.includes("description") || value.length > 55;
@@ -45,10 +46,37 @@ function collectReviews() {
   })).filter((review) => review.title || review.body || review.name);
 }
 
-function saveReviews() {
+async function saveContentToSupabase() {
+  if (isLoading || !window.supabaseClient) return;
+  isLoading = true;
+
+  try {
+    const data = collectFormData();
+    console.log("💾 Saving to Supabase...", Object.keys(data).length, "items");
+
+    for (const [key, value] of Object.entries(data)) {
+      const { error } = await window.supabaseClient
+        .from('site_content')
+        .upsert({ key, value });
+
+      if (error) {
+        console.error(`❌ Failed to save ${key}:`, error.message);
+      }
+    }
+
+    savedContent = data;
+    console.log("✅ Content saved to Supabase");
+  } catch (err) {
+    console.error("❌ Save failed:", err.message);
+  } finally {
+    isLoading = false;
+  }
+}
+
+function saveReviewsToLocalStorage() {
   reviews = collectReviews();
   localStorage.setItem("choSiteReviews", JSON.stringify(reviews));
-  console.log("✅ Reviews saved to localStorage");
+  console.log("✅ Reviews saved");
 }
 
 function renderReviewAdmin() {
@@ -75,19 +103,16 @@ function escapeHtml(value) {
     .replace(/"/g, "&quot;");
 }
 
-form?.addEventListener("input", () => {
-  localStorage.setItem("choSiteContent", JSON.stringify(collectFormData()));
-  console.log("✅ Content saved to localStorage");
-});
+form?.addEventListener("input", saveContentToSupabase);
 
-reviewAdminList?.addEventListener("input", saveReviews);
+reviewAdminList?.addEventListener("input", saveReviewsToLocalStorage);
 
 reviewAdminList?.addEventListener("click", (event) => {
   const button = event.target.closest("[data-remove-review]");
   if (!button) return;
   reviews = collectReviews();
   reviews.splice(Number(button.dataset.removeReview), 1);
-  saveReviews();
+  saveReviewsToLocalStorage();
   renderReviewAdmin();
 });
 
@@ -100,7 +125,7 @@ addReviewButton?.addEventListener("click", () => {
     meta: "지역 및 계약 유형",
     image: ""
   });
-  saveReviews();
+  saveReviewsToLocalStorage();
   renderReviewAdmin();
 });
 
@@ -118,7 +143,6 @@ exportButton?.addEventListener("click", async () => {
   } catch (err) {
     alert("텍스트 영역에서 직접 복사하세요.");
   }
-  console.log("✅ JSON exported");
 });
 
 resetButton?.addEventListener("click", () => {
@@ -128,6 +152,24 @@ resetButton?.addEventListener("click", () => {
   location.reload();
 });
 
-renderAdminForm();
-renderReviewAdmin();
-console.log("✅ Admin panel loaded");
+async function init() {
+  try {
+    // localStorage에서 먼저 로드
+    try {
+      const saved = JSON.parse(localStorage.getItem("choSiteContent") || "{}");
+      savedContent = saved;
+    } catch (e) {}
+
+    const saved = JSON.parse(localStorage.getItem("choSiteReviews") || "[]");
+    reviews = Array.isArray(saved) ? saved : [];
+
+    renderAdminForm();
+    renderReviewAdmin();
+
+    console.log("✅ Admin panel loaded");
+  } catch (err) {
+    console.error("Init failed:", err.message);
+  }
+}
+
+document.addEventListener("DOMContentLoaded", init);

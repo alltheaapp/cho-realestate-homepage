@@ -1,4 +1,3 @@
-
 window.SITE_CONTENT = {
   "meta.title": "조광현 공인중개사 | 상가·빌딩 전문 부동산 컨설팅",
   "meta.description": "상가 중개, 프랜차이즈 양도양수, 빌딩 매매, 상권 분석을 데이터 기반으로 지원하는 조광현 공인중개사 홈페이지입니다.",
@@ -101,13 +100,39 @@ window.DEFAULT_REVIEWS = [
   }
 ];
 
-function getSiteContent() {
+async function getSiteContent() {
+  try {
+    // Supabase에서 먼저 시도
+    if (window.supabaseClient) {
+      const { data, error } = await window.supabaseClient
+        .from('site_content')
+        .select('key, value');
+
+      if (!error && data?.length > 0) {
+        const content = {};
+        data.forEach(row => content[row.key] = row.value);
+        console.log("✅ Loaded from Supabase:", data.length, "items");
+        return { ...window.SITE_CONTENT, ...content };
+      }
+    }
+  } catch (err) {
+    console.warn("Supabase read failed:", err.message);
+  }
+
+  // localStorage 폴백
   try {
     const saved = JSON.parse(localStorage.getItem("choSiteContent") || "{}");
-    return { ...window.SITE_CONTENT, ...saved };
-  } catch {
-    return { ...window.SITE_CONTENT };
+    if (Object.keys(saved).length > 0) {
+      console.log("✅ Loaded from localStorage");
+      return { ...window.SITE_CONTENT, ...saved };
+    }
+  } catch (err) {
+    console.warn("localStorage read failed");
   }
+
+  // 기본값
+  console.log("✅ Using defaults");
+  return { ...window.SITE_CONTENT };
 }
 
 function getSiteReviews() {
@@ -148,8 +173,8 @@ function renderSiteReviews() {
   document.dispatchEvent(new CustomEvent("site-reviews-rendered"));
 }
 
-function applySiteContent() {
-  const content = getSiteContent();
+async function applySiteContent() {
+  const content = await getSiteContent();
 
   document.querySelectorAll("[data-content]").forEach((node) => {
     const key = node.getAttribute("data-content");
@@ -170,7 +195,7 @@ function applySiteContent() {
   });
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-  applySiteContent();
+document.addEventListener("DOMContentLoaded", async () => {
+  await applySiteContent();
   renderSiteReviews();
 });
