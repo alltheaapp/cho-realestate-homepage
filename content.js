@@ -1,8 +1,3 @@
-const SUPABASE_URL = "https://dwbkwotldcvdzcmfassa.supabase.co";
-const SUPABASE_KEY = "sb_publishable_6nugV1vM4g-D1AMPQTSPWw_6oIYdbXs";
-
-const { createClient } = window.supabase;
-const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
 window.SITE_CONTENT = {
   "meta.title": "조광현 공인중개사 | 상가·빌딩 전문 부동산 컨설팅",
@@ -106,38 +101,20 @@ window.DEFAULT_REVIEWS = [
   }
 ];
 
-async function getSiteContent() {
+function getSiteContent() {
   try {
-    console.log("🔍 Loading content from Supabase...");
-    const { data, error } = await supabase
-      .from('site_content')
-      .select('key, value');
-
-    if (error) throw error;
-
-    console.log("✅ Loaded", data?.length || 0, "items from Supabase");
-    const content = {};
-    data?.forEach(row => {
-      content[row.key] = row.value;
-    });
-    return { ...window.SITE_CONTENT, ...content };
-  } catch (err) {
-    console.warn('❌ Supabase fetch failed:', err.message);
+    const saved = JSON.parse(localStorage.getItem("choSiteContent") || "{}");
+    return { ...window.SITE_CONTENT, ...saved };
+  } catch {
     return { ...window.SITE_CONTENT };
   }
 }
 
-async function getSiteReviews() {
+function getSiteReviews() {
   try {
-    const { data, error } = await supabase
-      .from('site_reviews')
-      .select('*')
-      .order('created_at', { ascending: false });
-
-    if (error) throw error;
-    return Array.isArray(data) && data.length ? data : [...window.DEFAULT_REVIEWS];
-  } catch (err) {
-    console.warn('Supabase fetch failed, using defaults:', err.message);
+    const saved = JSON.parse(localStorage.getItem("choSiteReviews") || "[]");
+    return Array.isArray(saved) && saved.length ? saved : [...window.DEFAULT_REVIEWS];
+  } catch {
     return [...window.DEFAULT_REVIEWS];
   }
 }
@@ -150,8 +127,8 @@ function escapeHtml(value) {
     .replace(/"/g, "&quot;");
 }
 
-async function renderSiteReviews() {
-  const reviews = await getSiteReviews();
+function renderSiteReviews() {
+  const reviews = getSiteReviews();
   const grids = document.querySelectorAll("[data-review-grid], [data-reviews-list]");
 
   grids.forEach((grid) => {
@@ -171,8 +148,8 @@ async function renderSiteReviews() {
   document.dispatchEvent(new CustomEvent("site-reviews-rendered"));
 }
 
-async function applySiteContent() {
-  const content = await getSiteContent();
+function applySiteContent() {
+  const content = getSiteContent();
 
   document.querySelectorAll("[data-content]").forEach((node) => {
     const key = node.getAttribute("data-content");
@@ -193,7 +170,7 @@ async function applySiteContent() {
   });
 }
 
-document.addEventListener("DOMContentLoaded", async () => {
-  await applySiteContent();
-  await renderSiteReviews();
+document.addEventListener("DOMContentLoaded", () => {
+  applySiteContent();
+  renderSiteReviews();
 });

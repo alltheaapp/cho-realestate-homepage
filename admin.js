@@ -1,22 +1,12 @@
-import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.0/+esm';
-
-const SUPABASE_URL = "https://dwbkwotldcvdzcmfassa.supabase.co";
-const SUPABASE_KEY = "sb_publishable_6nugV1vM4g-D1AMPQTSPWw_6oIYdbXs";
-const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
-
-console.log("✅ Admin: Supabase 초기화 완료", { SUPABASE_URL });
-
 const form = document.querySelector("[data-admin-form]");
 const exportButton = document.querySelector("[data-export]");
 const resetButton = document.querySelector("[data-reset]");
 const exportBox = document.querySelector("[data-export-box]");
 const reviewAdminList = document.querySelector("[data-review-admin-list]");
 const addReviewButton = document.querySelector("[data-add-review]");
-const copyJsonButton = document.querySelector("[data-copy-json]");
 
-let savedContent = {};
-let reviews = [];
-let isLoading = false;
+let savedContent = getSiteContent();
+let reviews = getSiteReviews();
 
 function isLongField(key, value) {
   return key.includes("lead") || key.includes("summary") || key.includes("body") || key.includes("description") || value.length > 55;
@@ -55,53 +45,10 @@ function collectReviews() {
   })).filter((review) => review.title || review.body || review.name);
 }
 
-async function saveContentToSupabase() {
-  if (isLoading) return;
-  isLoading = true;
-
-  try {
-    const data = collectFormData();
-    console.log("📝 Saving data:", Object.keys(data).length, "items");
-
-    for (const [key, value] of Object.entries(data)) {
-      const { error } = await supabase
-        .from('site_content')
-        .upsert({ key, value });
-
-      if (error) {
-        console.error(`❌ Failed to save ${key}:`, error);
-      }
-    }
-
-    savedContent = data;
-    console.log("✅ Content saved to Supabase");
-  } catch (err) {
-    console.error("❌ Save failed:", err.message, err);
-  } finally {
-    isLoading = false;
-  }
-}
-
-async function saveReviewsToSupabase() {
-  if (isLoading) return;
-  isLoading = true;
-
-  try {
-    const newReviews = collectReviews();
-
-    await supabase.from('site_reviews').delete().gt('id', 0);
-
-    if (newReviews.length > 0) {
-      await supabase.from('site_reviews').insert(newReviews);
-    }
-
-    reviews = newReviews;
-    console.log("✅ Reviews saved to Supabase");
-  } catch (err) {
-    console.error("❌ Save failed:", err.message);
-  } finally {
-    isLoading = false;
-  }
+function saveReviews() {
+  reviews = collectReviews();
+  localStorage.setItem("choSiteReviews", JSON.stringify(reviews));
+  console.log("✅ Reviews saved to localStorage");
 }
 
 function renderReviewAdmin() {
@@ -128,20 +75,23 @@ function escapeHtml(value) {
     .replace(/"/g, "&quot;");
 }
 
-form?.addEventListener("input", saveContentToSupabase);
+form?.addEventListener("input", () => {
+  localStorage.setItem("choSiteContent", JSON.stringify(collectFormData()));
+  console.log("✅ Content saved to localStorage");
+});
 
-reviewAdminList?.addEventListener("input", saveReviewsToSupabase);
+reviewAdminList?.addEventListener("input", saveReviews);
 
-reviewAdminList?.addEventListener("click", async (event) => {
+reviewAdminList?.addEventListener("click", (event) => {
   const button = event.target.closest("[data-remove-review]");
   if (!button) return;
   reviews = collectReviews();
   reviews.splice(Number(button.dataset.removeReview), 1);
-  await saveReviewsToSupabase();
+  saveReviews();
   renderReviewAdmin();
 });
 
-addReviewButton?.addEventListener("click", async () => {
+addReviewButton?.addEventListener("click", () => {
   reviews = collectReviews();
   reviews.push({
     title: "\"새 계약 후기 제목\"",
@@ -150,7 +100,7 @@ addReviewButton?.addEventListener("click", async () => {
     meta: "지역 및 계약 유형",
     image: ""
   });
-  await saveReviewsToSupabase();
+  saveReviews();
   renderReviewAdmin();
 });
 
@@ -171,44 +121,13 @@ exportButton?.addEventListener("click", async () => {
   console.log("✅ JSON exported");
 });
 
-resetButton?.addEventListener("click", async () => {
+resetButton?.addEventListener("click", () => {
   if (!confirm("저장된 모든 데이터를 초기화할까요?")) return;
-
-  try {
-    await supabase.from('site_content').delete().gt('id', 0);
-    await supabase.from('site_reviews').delete().gt('id', 0);
-    location.reload();
-  } catch (err) {
-    console.error("Reset failed:", err.message);
-    alert("초기화 실패: " + err.message);
-  }
+  localStorage.removeItem("choSiteContent");
+  localStorage.removeItem("choSiteReviews");
+  location.reload();
 });
 
-async function init() {
-  try {
-    const { data: contentData } = await supabase
-      .from('site_content')
-      .select('key, value');
-
-    const { data: reviewsData } = await supabase
-      .from('site_reviews')
-      .select('*')
-      .order('created_at', { ascending: false });
-
-    contentData?.forEach(row => {
-      savedContent[row.key] = row.value;
-    });
-
-    reviews = reviewsData || [];
-
-    renderAdminForm();
-    renderReviewAdmin();
-
-    console.log("✅ Admin panel loaded from Supabase");
-  } catch (err) {
-    console.error("❌ Init failed:", err.message);
-    alert("Supabase 연결 실패. 잠시 후 다시 시도해주세요.");
-  }
-}
-
-document.addEventListener("DOMContentLoaded", init);
+renderAdminForm();
+renderReviewAdmin();
+console.log("✅ Admin panel loaded");
