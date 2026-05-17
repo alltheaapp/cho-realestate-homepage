@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>콘텐츠 관리 | 조광현 공인중개사</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: #f5f5f5; padding: 20px; }
+    .container { max-width: 800px; margin: 0 auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+    h1 { margin-bottom: 10px; color: #333; font-size: 24px; }
+    .subtitle { color: #666; margin-bottom: 30px; font-size: 14px; }
+
+    .tabs { display: flex; gap: 10px; margin-bottom: 30px; flex-wrap: wrap; border-bottom: 2px solid #eee; }
+    .tab-btn { padding: 12px 16px; border: none; background: transparent; cursor: pointer; font-weight: 500; font-size: 14px; color: #666; border-bottom: 3px solid transparent; transition: all 0.2s; margin-bottom: -2px; }
+    .tab-btn:hover { color: #333; }
+    .tab-btn.active { color: #3B82F6; border-bottom-color: #3B82F6; }
+
+    .tab-content { display: none; }
+    .tab-content.active { display: block; animation: fadeIn 0.2s; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    .form-group { margin-bottom: 20px; }
+    label { display: block; margin-bottom: 8px; font-weight: 500; color: #555; font-size: 14px; }
+    label small { display: block; color: #999; font-weight: normal; font-size: 12px; margin-top: 4px; }
+    input, textarea { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-family: inherit; font-size: 14px; }
+    input:focus, textarea:focus { outline: none; border-color: #3B82F6; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1); }
+    textarea { resize: vertical; min-height: 80px; }
+
+    .actions { display: flex; gap: 10px; margin-top: 30px; }
+    button { padding: 12px 24px; border: none; border-radius: 4px; font-weight: 600; cursor: pointer; font-size: 14px; transition: all 0.2s; }
+    .btn-save { background: #3B82F6; color: white; flex: 1; }
+    .btn-save:hover { background: #2563EB; }
+    .btn-save:disabled { background: #9CA3AF; cursor: not-allowed; }
+    .btn-home { background: #f0f0f0; color: #333; }
+    .btn-home:hover { background: #e0e0e0; }
+    .status { padding: 12px; border-radius: 4px; margin-top: 20px; text-align: center; font-weight: 500; display: none; }
+    .status.success { background: #D1FAE5; color: #065F46; display: block; }
+    .status.error { background: #FEE2E2; color: #991B1B; display: block; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🌐 콘텐츠 관리</h1>
+    <p class="subtitle">페이지별로 콘텐츠를 수정합니다. 저장하면 즉시 반영됩니다</p>
+
+    <div class="tabs" id="tabs"></div>
+
+    <form id="contentForm"></form>
+
+    <div id="status" class="status"></div>
+
+    <div class="actions">
+      <button type="submit" class="btn-save" id="saveBtn">💾 저장</button>
+      <button type="button" class="btn-home" onclick="window.location.href='/'">🏠 홈으로</button>
+    </div>
+  </div>
+
+  <script>
+    const pageGroups = {
+      home: {
+        title: "홈페이지",
+        fields: ["hero.badge", "hero.title", "hero.lead", "services.title", "services.lead", "service.retail.title", "service.retail.summary", "service.franchise.title", "service.franchise.summary", "service.building.title", "service.building.summary", "service.market.title", "service.market.summary", "why.title", "why.body", "process.title", "contact.title", "contact.lead", "contact.address", "reviews.title", "reviews.lead", "footer.description", "footer.license", "brand.name", "brand.subtitle", "contact.phone", "contact.email"]
+      },
+      retail: {
+        title: "상가중개",
+        fields: ["detail.retail.title", "detail.retail.lead"]
+      },
+      franchise: {
+        title: "프랜차이즈",
+        fields: ["detail.franchise.title", "detail.franchise.lead"]
+      },
+      building: {
+        title: "빌딩매매",
+        fields: ["detail.building.title", "detail.building.lead"]
+      },
+      market: {
+        title: "상권분석",
+        fields: ["detail.market.title", "detail.market.lead"]
+      },
+      reviews: {
+        title: "고객후기",
+        fields: ["reviews.title", "reviews.lead"]
+      },
+      footer: {
+        title: "기타",
+        fields: ["meta.title", "meta.description"]
+      }
+    };
+
+    const form = document.getElementById("contentForm");
+    const statusEl = document.getElementById("status");
+    const tabsContainer = document.getElementById("tabs");
+    const saveBtn = document.getElementById("saveBtn");
+
+    function renderTabs() {
+      Object.entries(pageGroups).forEach(([key, page]) => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = `tab-btn ${key === "home" ? "active" : ""}`;
+        btn.textContent = page.title;
+        btn.setAttribute("data-tab", key);
+        btn.onclick = () => switchTab(key);
+        tabsContainer.appendChild(btn);
+      });
+
+      Object.entries(pageGroups).forEach(([key, page]) => {
+        const tabDiv = document.createElement("div");
+        tabDiv.className = `tab-content ${key === "home" ? "active" : ""}`;
+        tabDiv.id = `tab-${key}`;
+
+        page.fields.forEach(fieldKey => {
+          const label = window.CONTENT_LABELS?.[fieldKey] || fieldKey;
+          const value = window.SITE_CONTENT?.[fieldKey] || "";
+          const isLong = fieldKey.includes("lead") || fieldKey.includes("summary") || fieldKey.includes("body") || fieldKey.includes("description") || String(value).length > 55;
+
+          const fieldGroup = document.createElement("div");
+          fieldGroup.className = "form-group";
+
+          const labelEl = document.createElement("label");
+          labelEl.innerHTML = `${label}<small>${fieldKey}</small>`;
+          fieldGroup.appendChild(labelEl);
+
+          if (isLong) {
+            const textarea = document.createElement("textarea");
+            textarea.name = fieldKey;
+            textarea.value = value;
+            fieldGroup.appendChild(textarea);
+          } else {
+            const input = document.createElement("input");
+            input.type = "text";
+            input.name = fieldKey;
+            input.value = value;
+            fieldGroup.appendChild(input);
+          }
+
+          tabDiv.appendChild(fieldGroup);
+        });
+
+        form.appendChild(tabDiv);
+      });
+    }
+
+    function switchTab(tabKey) {
+      document.querySelectorAll(".tab-btn").forEach(btn => btn.classList.remove("active"));
+      document.querySelector(`[data-tab="${tabKey}"]`)?.classList.add("active");
+
+      document.querySelectorAll(".tab-content").forEach(tab => tab.classList.remove("active"));
+      document.getElementById(`tab-${tabKey}`)?.classList.add("active");
+    }
+
+    async function loadData() {
+      try {
+        const response = await fetch("/api/content");
+        const data = await response.json();
+
+        if (Array.isArray(data)) {
+          data.forEach(row => {
+            const input = form.querySelector(`[name="${row.key}"]`);
+            if (input) input.value = row.value;
+          });
+          showStatus("✅ 데이터 로드됨", "success");
+        }
+      } catch (err) {
+        console.error("Load error:", err);
+        showStatus("⚠️ 데이터 로드 실패", "error");
+      }
+    }
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      saveBtn.disabled = true;
+      saveBtn.textContent = "저장 중...";
+
+      const formData = new FormData(form);
+      const updates = [];
+
+      for (const [key, value] of formData.entries()) {
+        updates.push({ key, value });
+      }
+
+      let saved = 0;
+      let failed = 0;
+
+      for (const item of updates) {
+        try {
+          const response = await fetch("/api/content", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(item)
+          });
+
+          if (response.ok) {
+            saved++;
+          } else {
+            failed++;
+            console.error(`Failed to save ${item.key}`);
+          }
+        } catch (err) {
+          failed++;
+          console.error(`Error saving ${item.key}:`, err);
+        }
+      }
+
+      saveBtn.disabled = false;
+      saveBtn.textContent = "💾 저장";
+
+      if (failed === 0) {
+        showStatus(`✅ ${saved}개 항목 저장됨!`, "success");
+      } else {
+        showStatus(`⚠️ ${saved}개 저장, ${failed}개 실패`, "error");
+      }
+    });
+
+    function showStatus(msg, type) {
+      statusEl.textContent = msg;
+      statusEl.className = `status ${type}`;
+      setTimeout(() => {
+        statusEl.className = "status";
+      }, 3000);
+    }
+
+    renderTabs();
+    loadData();
+  </script>
+</body>
+</html>

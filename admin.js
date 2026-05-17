@@ -10,14 +10,32 @@ let savedContent = {};
 let reviews = [];
 let isLoading = false;
 let lastSaveTime = null;
+let currentTab = "home";
+
+const pageGroups = {
+  home: ["meta", "brand", "hero", "services", "service", "why", "process", "contact", "reviews", "footer"],
+  retail: ["detail.retail"],
+  franchise: ["detail.franchise"],
+  building: ["detail.building"],
+  market: ["detail.market"]
+};
 
 function isLongField(key, value) {
   return key.includes("lead") || key.includes("summary") || key.includes("body") || key.includes("description") || value.length > 55;
 }
 
+function filterByTab(entries) {
+  const prefixes = pageGroups[currentTab] || [];
+  return entries.filter(([key]) =>
+    prefixes.some(prefix => key.startsWith(prefix))
+  );
+}
+
 function renderAdminForm() {
   const labels = window.CONTENT_LABELS || {};
-  const entries = Object.entries(window.SITE_CONTENT).filter(([key]) => labels[key]);
+  let entries = Object.entries(window.SITE_CONTENT).filter(([key]) => labels[key]);
+
+  entries = filterByTab(entries);
 
   form.innerHTML = entries.map(([key, defaultValue]) => {
     const label = labels[key] || key;
@@ -230,7 +248,7 @@ function updateSyncStatus() {
     statusEl.textContent = "모든 기기에서 실시간 동기화됩니다 ✅";
     statusEl.style.color = "green";
   } else {
-    statusEl.textContent = "Supabase 연결 대기 중... (3초 타임아웃)";
+    statusEl.textContent = "로컬 저장소 사용 (localStorage)";
     statusEl.style.color = "orange";
   }
 }
@@ -281,69 +299,88 @@ async function checkSyncStatus() {
 
 async function init() {
   try {
-    // Supabase 초기화 대기 (최대 3초)
-    let waited = 0;
-    while (!window.supabaseReady && waited < 3000) {
-      await new Promise(resolve => setTimeout(resolve, 100));
-      waited += 100;
-    }
+    // 1. localStorage에서 빠르게 로드 (즉시 form 렌더링)
+    try {
+      const saved = JSON.parse(localStorage.getItem("choSiteContent") || "{}");
+      savedContent = saved;
+      console.log("📦 localStorage에서 로드됨");
+    } catch (e) {}
 
-    updateSyncStatus();
+    try {
+      const saved = JSON.parse(localStorage.getItem("choSiteReviews") || "[]");
+      reviews = Array.isArray(saved) ? saved : [];
+    } catch (e) {}
 
-    // Supabase에서 데이터 로드
-    if (window.supabaseClient && window.supabaseReady) {
-      console.log("📦 Supabase에서 콘텐츠 로드 중...");
-      try {
-        const { data } = await window.supabaseClient
-          .from('site_content')
-          .select('key, value');
-
-        if (data && data.length) {
-          data.forEach(row => {
-            savedContent[row.key] = row.value;
-          });
-          console.log(`✅ Supabase에서 ${data.length}개 항목 로드됨`);
-        }
-      } catch (err) {
-        console.warn("⚠️ Supabase 로드 실패:", err.message);
-      }
-
-      try {
-        const { data } = await window.supabaseClient
-          .from('site_reviews')
-          .select('*')
-          .order('created_at', { ascending: false });
-
-        if (data && data.length) {
-          reviews = data;
-          console.log(`✅ Supabase에서 ${data.length}개 후기 로드됨`);
-        }
-      } catch (err) {
-        console.warn("⚠️ 후기 로드 실패:", err.message);
-      }
-    } else {
-      // Supabase 실패 시 localStorage 폴백
-      console.warn("⚠️ Supabase 연결 실패, localStorage 사용");
-      try {
-        const saved = JSON.parse(localStorage.getItem("choSiteContent") || "{}");
-        savedContent = saved;
-      } catch (e) {}
-
-      try {
-        const saved = JSON.parse(localStorage.getItem("choSiteReviews") || "[]");
-        reviews = Array.isArray(saved) ? saved : [];
-      } catch (e) {}
-    }
-
+    // form 빠르게 렌더링
     renderAdminForm();
     renderReviewAdmin();
     updateSyncInfo();
-    checkSyncStatus();
+    updateSyncStatus();
 
-    console.log("✅ Admin panel loaded");
+    console.log("✅ Admin panel loaded (localStorage)");
+
+    // 2. 백그라운드에서 Supabase 로드 (비동기)
+    (async () => {
+      let waited = 0;
+      while (!window.supabaseReady && waited < 3000) {
+        await new Promise(resolve => setTimeout(resolve, 100));
+        waited += 100;
+      }
+
+      if (window.supabaseClient && window.supabaseReady) {
+        try {
+          console.log("📦 Supabase에서 데이터 로드 중...");
+          const { data: contentData } = await window.supabaseClient
+            .from('site_content')
+            .select('key, value');
+
+          if (contentData && contentData.length) {
+            contentData.forEach(row => {
+              savedContent[row.key] = row.value;
+            });
+            renderAdminForm();
+            console.log(`✅ Supabase ${contentData.length}개 항목 로드됨`);
+          }
+
+          const { data: reviewData } = await window.supabaseClient
+            .from('site_reviews')
+            .select('*')
+            .order('created_at', { ascending: false });
+
+          if (reviewData && reviewData.length) {
+            reviews = reviewData;
+            renderReviewAdmin();
+            console.log(`✅ Supabase ${reviewData.length}개 후기 로드됨`);
+          }
+
+          updateSyncInfo();
+          updateSyncStatus();
+        } catch (err) {
+          console.warn("⚠️ Supabase 로드 실패:", err.message);
+        }
+      }
+    })();
+
   } catch (err) {
     console.error("Init failed:", err.message);
   }
 }
 
-document.addEventListener("DOMContentLoaded", init);
+function initTabs() {
+  const tabs = document.querySelectorAll("[data-tab]");
+  tabs.forEach(tab => {
+    tab.addEventListener("click", () => {
+      currentTab = tab.dataset.tab;
+
+      tabs.forEach(t => t.classList.remove("active"));
+      tab.classList.add("active");
+
+      renderAdminForm();
+    });
+  });
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  initTabs();
+  init();
+});
