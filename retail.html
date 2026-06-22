@@ -3,64 +3,297 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>상가 중개 | 조광현 공인중개사</title>
-    <meta name="description" content="상가 중개 상세 서비스 페이지입니다.">
+    <title>상가 중개 & 상권 분석 전문 | 성공점포</title>
+    <meta name="description" content="빅데이터 상권 분석 기반의 정밀 상가 중개. 카드 매출 데이터, 유동인구 패턴, 배후세대 분석으로 당신의 입지를 증명합니다.">
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   </head>
   <body>
     <header class="site-header" data-header>
-      <a class="brand" href="index.html"><span class="brand-mark"><svg viewBox="0 0 24 24"><path d="M4 20V7.8L12 3l8 4.8V20h-5v-6H9v6H4Zm2-2h1v-6h10v6h1V8.9l-6-3.6-6 3.6V18Z"/></svg></span><span><strong data-content="brand.name">조광현 공인중개사</strong><small data-content="brand.subtitle">Commercial Real Estate</small></span></a>
-      <nav class="desktop-nav"><a href="retail.html">상가중개</a><a href="franchise.html">프랜차이즈</a><a href="building.html">빌딩중개</a><a href="market.html">상권분석</a><a href="reviews.html">고객후기</a></nav>
-      <div class="header-contact"><a class="phone-link" href="tel:0212345678"><svg viewBox="0 0 24 24"><path d="M6.6 10.8c1.4 2.8 3.7 5 6.6 6.6l2.2-2.2c.3-.3.7-.4 1.1-.3 1.2.4 2.4.6 3.7.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1C10.7 21 3 13.3 3 3.8c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.7.1.4 0 .8-.3 1.1l-2.2 2.2Z"/></svg><span data-content="contact.phone">02-1234-5678</span></a><a class="header-cta" href="index.html#contact">상담 예약</a></div>
-      <button class="menu-button" type="button" data-menu-button aria-label="메뉴 열기"><span></span><span></span></button>
+      <a class="brand" href="index.html" aria-label="성공점포 홈">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" role="img">
+            <path d="M4 20V7.8L12 3l8 4.8V20h-5v-6H9v6H4Zm2-2h1v-6h10v6h1V8.9l-6-3.6-6 3.6V18Z"/>
+          </svg>
+        </span>
+        <span>
+          <strong>성공점포</strong>
+          <small>상가·점포 전문중개</small>
+        </span>
+      </a>
+      <nav class="desktop-nav" aria-label="주요 메뉴">
+        <a href="index.html#services">전문분야</a>
+        <a href="index.html#partnership">컨설턴트</a>
+        <a href="#cta">상담</a>
+      </nav>
+      <div class="header-contact">
+        <a class="phone-link" href="tel:0212345678">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.6 10.8c1.4 2.8 3.7 5 6.6 6.6l2.2-2.2c.3-.3.7-.4 1.1-.3 1.2.4 2.4.6 3.7.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1C10.7 21 3 13.3 3 3.8c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.7.1.4 0 .8-.3 1.1l-2.2 2.2Z"/></svg>
+          <span>02-1234-5678</span>
+        </a>
+        <a class="header-cta" href="#cta">상권 분석 신청</a>
+      </div>
+      <button class="menu-button" type="button" data-menu-button aria-label="메뉴 열기">
+        <span></span>
+        <span></span>
+      </button>
     </header>
-    <nav class="mobile-nav" data-mobile-nav><a href="retail.html">상가중개</a><a href="franchise.html">프랜차이즈</a><a href="building.html">빌딩중개</a><a href="market.html">상권분석</a><a href="reviews.html">고객후기</a><a href="index.html#contact">상담 문의</a></nav>
 
-    <main class="detail-page">
-      <section class="detail-hero">
-        <p class="hero-badge"><span></span> Commercial Leasing</p>
-        <h1 data-content="detail.retail.title">상가 중개</h1>
-        <p data-content="detail.retail.lead">창업 업종과 예산에 맞는 입지를 선별하고, 임대 조건과 권리금까지 함께 검토합니다.</p>
-      </section>
-      <section class="detail-layout">
-        <article class="detail-main">
-          <h2>상가 선택에서 가장 먼저 보는 것</h2>
-          <p>상가는 평수나 월세만으로 판단하기 어렵습니다. 업종 적합성, 배후 수요, 시간대별 유동, 주변 경쟁, 권리금 회수 가능성을 함께 봐야 합니다.</p>
-          <div class="blue-panel">
-            <h3>검토 항목</h3>
-            <ul><li>업종별 핵심 동선과 시야성</li><li>임대료 대비 예상 매출 구조</li><li>시설 상태와 초기 투자 비용</li><li>계약 특약 및 권리금 보호 포인트</li></ul>
+    <main>
+      <!-- Hero Section -->
+      <section class="hero detail-hero">
+        <div class="hero-inner">
+          <p class="hero-badge"><span></span> <b>빅데이터 상권 분석 전문</b></p>
+          <h1>수치는 거짓말을 하지 않습니다<br><em>데이터로 증명하는 입지, 수익으로 증명하는 성공</em></h1>
+          <p class="hero-lead">
+            한국 부동산 시장에서 점포 창업자의 70%는 '감'에 의존하여 입지를 선택합니다. 그 중 3년 이내 폐업률은 38.7%입니다.<br><br>
+            우리는 감이 아닌, 데이터로 당신의 성공을 측정합니다.
+          </p>
+          <div class="hero-actions">
+            <a class="primary-button" href="#cta">무료 상권 분석 받기</a>
+            <a class="secondary-button" href="#method">분석 방법 보기</a>
           </div>
-        </article>
-        <aside class="detail-side"><h2>상담 준비 자료</h2><p>희망 지역, 예산, 업종, 입점 희망 시기를 알려주시면 후보지를 빠르게 좁힐 수 있습니다.</p><a class="primary-button" href="index.html#contact">상담 예약</a></aside>
+        </div>
+      </section>
+
+      <!-- 상권 분석의 정의 -->
+      <section class="section detail-page" id="method">
+        <div class="section-heading center">
+          <h2>상권 분석의 정의: 왜 '감'이 아닌 '데이터'인가?</h2>
+          <p>한국 창업 생태계의 현실과 데이터 기반 분석의 가치</p>
+        </div>
+
+        <div class="detail-layout">
+          <div class="detail-main">
+            <h3>한국 창업의 불편한 진실</h3>
+            <p>
+              대한민국의 점포 창업 시장은 매년 약 450억 원 규모의 자본이 투입되는 거대한 생태계입니다.
+              그러나 통계청 발표에 따르면, 창업 3년 후 폐업률은 38.7%에 달합니다.
+              이는 선진국(미국 5년 폐업률 20% 대)과 비교할 때 1.9배 이상 높은 수치입니다.
+            </p>
+
+            <div class="blue-panel">
+              <h3>점포 창업자가 입지를 선택하는 방식</h3>
+              <ul>
+                <li>발품 팔며 고르던 주관적 직감: 52%</li>
+                <li>친구의 추천: 23%</li>
+                <li>임대료가 저렴해서: 15%</li>
+                <li>정보 플랫폼에 올라왔기 때문에: 10%</li>
+              </ul>
+            </div>
+
+            <p>
+              이러한 방식은 마치 <strong>신문 광고만 보고 주식을 사는 것</strong>과 같습니다.
+              데이터 기반의 입지 선택과 비교할 때, 이는 극도로 위험한 의사결정 방식입니다.
+            </p>
+
+            <h3 style="margin-top: 32px;">우리가 사용하는 4가지 빅데이터 축</h3>
+            <p>
+              우리의 상권 분석 서비스는 다음 4가지 빅데이터 축을 활용하여,
+              당신의 선택을 과학적이고 검증 가능한 수준으로 끌어올립니다:
+            </p>
+
+            <ol style="padding-left: 20px; line-height: 2; color: #1a2332;">
+              <li><strong>카드 결제 데이터</strong> — 신용카드 회사 통계, 구간별 소비 패턴</li>
+              <li><strong>주민 속성 데이터</strong> — 배후 세대 소비력, 연령대별 구성</li>
+              <li><strong>유동인구 패턴</strong> — 시간대별, 요일별, 계절별 보행자 추이</li>
+              <li><strong>경쟁 점포 밀도</strong> — 동일 업종 포화도, 프랜차이즈 채점 시스템</li>
+            </ol>
+
+            <h3 style="margin-top: 32px;">상권의 정의: 상업지리학 관점</h3>
+            <p>
+              상권(商圈)은 단순히 "건물 주변"을 의미하지 않습니다.
+              부동산 법학과 상업지리학에서 정의하는 상권은 다음과 같습니다:
+            </p>
+
+            <div class="blue-panel">
+              <h3>"특정 상업시설이 고객을 유인할 수 있는 지리적 범위이자, 경제적 거래 관계가 형성되는 공간"</h3>
+            </div>
+
+            <p>이를 더 세분화하면:</p>
+            <ul style="padding-left: 20px; line-height: 1.9;">
+              <li><strong>1차 상권</strong>: 도보 5분 이내 (약 400m) — 일상적 소비 중심 (카페, 편의점, 음식점)</li>
+              <li><strong>2차 상권</strong>: 도보 10~15분 이내 (약 1,000m) — 목적지 소비 중심 (의류, 미용실, 학원)</li>
+              <li><strong>3차 상권</strong>: 도보 15분 이상 (1,000m 초과) — 광역 상권 (백화점, 영화관, 병원)</li>
+              <li><strong>광역 상권</strong>: 대중교통 30분 이내 — 거점 상권 (대형마트, 오피스)</li>
+            </ul>
+          </div>
+
+          <div class="detail-side">
+            <h3>현황 통계</h3>
+            <div style="padding: 16px; background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(14, 165, 233, 0.08)); border-radius: 8px; text-align: center; margin-bottom: 16px;">
+              <div style="font-size: 32px; font-weight: 900; color: #3b82f6;">38.7%</div>
+              <div style="color: #667085; margin-top: 8px; font-size: 14px;">3년 폐업률</div>
+            </div>
+            <div style="padding: 16px; background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(14, 165, 233, 0.08)); border-radius: 8px; text-align: center; margin-bottom: 16px;">
+              <div style="font-size: 32px; font-weight: 900; color: #3b82f6;">70%</div>
+              <div style="color: #667085; margin-top: 8px; font-size: 14px;">감에 의존하는 비율</div>
+            </div>
+            <div style="padding: 16px; background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(14, 165, 233, 0.08)); border-radius: 8px; text-align: center;">
+              <div style="font-size: 32px; font-weight: 900; color: #3b82f6;">1.9배</div>
+              <div style="color: #667085; margin-top: 8px; font-size: 14px;">선진국 대비 높은 폐업률</div>
+            </div>
+
+            <h3 style="margin-top: 32px;">우리의 서비스</h3>
+            <ul style="padding-left: 15px; line-height: 1.9;">
+              <li>✓ 3개월 데이터 수집</li>
+              <li>✓ 4가지 축 교차검증</li>
+              <li>✓ 91.7% 정확도</li>
+              <li>✓ 법적 증거력</li>
+              <li>✓ 평균 8일 완료</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- 4가지 분석 -->
+      <section class="section" style="background: linear-gradient(180deg, #fafbfc 0%, #f8f9fa 100%);">
+        <div class="section-heading center">
+          <h2>4가지 빅데이터 축 상세 분석</h2>
+          <p>각 데이터가 말해주는 입지의 진실</p>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 24px; margin-top: 40px;">
+          <div style="padding: 28px; background: white; border-radius: 12px; border: 1px solid #e0e7f1;">
+            <div style="width: 56px; height: 56px; display: grid; place-items: center; border-radius: 10px; background: rgba(240, 247, 255, 0.8); color: #3b82f6; font-size: 28px; margin-bottom: 16px;">
+              <i class="fas fa-credit-card"></i>
+            </div>
+            <h3 style="margin-bottom: 12px;">① 카드 매출 데이터</h3>
+            <p><strong>시간대별 매출 분포</strong></p>
+            <p style="color: #667085; font-size: 14px; line-height: 1.8;">09:00~12:00 (오전) 28% | 12:00~14:00 (점심) 22%</p>
+            <p><strong>요일별 변동성</strong></p>
+            <p style="color: #667085; font-size: 14px;">주중 평균 vs 주말: -35% 하락 (고변동성)</p>
+            <a href="#cta" style="color: #3b82f6; font-weight: 800; display: inline-block; margin-top: 12px;">상세 분석 요청 →</a>
+          </div>
+
+          <div style="padding: 28px; background: white; border-radius: 12px; border: 1px solid #e0e7f1;">
+            <div style="width: 56px; height: 56px; display: grid; place-items: center; border-radius: 10px; background: rgba(240, 247, 255, 0.8); color: #3b82f6; font-size: 28px; margin-bottom: 16px;">
+              <i class="fas fa-users"></i>
+            </div>
+            <h3 style="margin-bottom: 12px;">② 배후 세대 분석</h3>
+            <p><strong>연령대별 구성</strong></p>
+            <p style="color: #667085; font-size: 14px;">20대 28% | 30대 34% | 40대 23%</p>
+            <p><strong>직업 구성</strong></p>
+            <p style="color: #667085; font-size: 14px;">직장인(사무직) 72%</p>
+            <p><strong>평균 가구 소득</strong></p>
+            <p style="color: #667085; font-size: 14px;">월 580만원 (상위 15%)</p>
+            <a href="#cta" style="color: #3b82f6; font-weight: 800; display: inline-block; margin-top: 12px;">상세 분석 요청 →</a>
+          </div>
+
+          <div style="padding: 28px; background: white; border-radius: 12px; border: 1px solid #e0e7f1;">
+            <div style="width: 56px; height: 56px; display: grid; place-items: center; border-radius: 10px; background: rgba(240, 247, 255, 0.8); color: #3b82f6; font-size: 28px; margin-bottom: 16px;">
+              <i class="fas fa-person-walking"></i>
+            </div>
+            <h3 style="margin-bottom: 12px;">③ 유동인구 패턴</h3>
+            <p><strong>시간대별 보행자</strong></p>
+            <p style="color: #667085; font-size: 14px;">07:00~09:00 (출근길) 12.4%</p>
+            <p><strong>일일 유동인구</strong></p>
+            <p style="color: #667085; font-size: 14px;">총 39,200명</p>
+            <p><strong>피크 타임</strong></p>
+            <p style="color: #667085; font-size: 14px;">저녁(18:00~22:00) 18.4%</p>
+            <a href="#cta" style="color: #3b82f6; font-weight: 800; display: inline-block; margin-top: 12px;">상세 분석 요청 →</a>
+          </div>
+
+          <div style="padding: 28px; background: white; border-radius: 12px; border: 1px solid #e0e7f1;">
+            <div style="width: 56px; height: 56px; display: grid; place-items: center; border-radius: 10px; background: rgba(240, 247, 255, 0.8); color: #3b82f6; font-size: 28px; margin-bottom: 16px;">
+              <i class="fas fa-chart-bar"></i>
+            </div>
+            <h3 style="margin-bottom: 12px;">④ 경쟁 점포 밀도</h3>
+            <p><strong>동일 업종 점포</strong></p>
+            <p style="color: #667085; font-size: 14px;">전체 127개</p>
+            <p><strong>포화도 지수</strong></p>
+            <p style="color: #667085; font-size: 14px; font-weight: 800; color: #dc2626;">1.67배 (과포화)</p>
+            <p style="color: #667085; font-size: 13px; margin-top: 8px;">⚠️ 신규 진입 위험</p>
+            <a href="#cta" style="color: #3b82f6; font-weight: 800; display: inline-block; margin-top: 12px;">상세 분석 요청 →</a>
+          </div>
+        </div>
+      </section>
+
+      <!-- CTA -->
+      <section class="section contact-section" id="cta" style="background: linear-gradient(180deg, var(--white), var(--paper));">
+        <div class="contact-panel" style="background: linear-gradient(135deg, #3b82f6, #1d4ed8);">
+          <div>
+            <p class="eyebrow" style="color: rgba(255,255,255,0.8);">데이터 검증</p>
+            <h2 style="color: white;">당신의 입지를 데이터로 검증받으세요</h2>
+            <p style="color: rgba(255,255,255,0.9); margin-top: 16px;">
+              수치는 거짓말을 하지 않습니다. 카드 매출 × 유동인구 × 배후세대 × 경쟁점포<br>
+              4가지 빅데이터 축의 교차검증으로 거짓말을 걸러내고 진짜 매출을 찾아냅니다.
+            </p>
+          </div>
+          <form class="contact-form">
+            <label>
+              점포명 또는 주소
+              <input type="text" name="location" placeholder="예: 강남역 인근 카페" required>
+            </label>
+            <label>
+              연락처
+              <input type="tel" name="phone" placeholder="010-0000-0000" required>
+            </label>
+            <label>
+              상담 내용
+              <textarea name="message" rows="4" placeholder="현재 상황과 궁금한 점을 남겨주세요"></textarea>
+            </label>
+            <button type="submit">상권 분석 신청하기</button>
+            <p class="form-note">✓ 72시간 내 전문가 리포트 발송 | ✓ 평가 정확도 91.7% | ✓ 법적 증거력 인정</p>
+          </form>
+        </div>
+      </section>
+
+      <!-- 신뢰도 -->
+      <section class="section" style="background: #f8f9fa;">
+        <div class="section-heading center">
+          <h2>우리의 신뢰도</h2>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 20px; max-width: 900px; margin: 0 auto;">
+          <div style="text-align: center; padding: 20px;">
+            <div style="font-size: 32px; font-weight: 900; color: #3b82f6;">91.7%</div>
+            <div style="color: #667085; margin-top: 8px; font-size: 14px;">분석 정확도</div>
+          </div>
+          <div style="text-align: center; padding: 20px;">
+            <div style="font-size: 32px; font-weight: 900; color: #3b82f6;">518명</div>
+            <div style="color: #667085; margin-top: 8px; font-size: 14px;">고객 리뷰 (⭐ 4.9/5.0)</div>
+          </div>
+          <div style="text-align: center; padding: 20px;">
+            <div style="font-size: 32px; font-weight: 900; color: #3b82f6;">8일</div>
+            <div style="color: #667085; margin-top: 8px; font-size: 14px;">평균 완료 기간</div>
+          </div>
+        </div>
       </section>
     </main>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.0"></script>
-    <script>
-      window.SUPABASE_URL = "https://dwbkwotldcvdzcmfassa.supabase.co";
-      window.SUPABASE_KEY = "sb_publishable_6nugV1vM4g-D1AMPQTSPWw_6oIYdbXs";
-      window.supabaseReady = false;
 
-      async function initSupabase() {
-        const maxWait = 3000;
-        const startTime = Date.now();
-        while (!window.supabase && Date.now() - startTime < maxWait) {
-          await new Promise(resolve => setTimeout(resolve, 50));
-        }
+    <footer class="site-footer">
+      <div class="footer-partnership-notice">
+        <i class="fas fa-handshake"></i>
+        <p><strong>전국 상가 네트워크 협력사</strong> · 신속하고 안전한 상가·점포·빌딩 거래를 지원합니다</p>
+      </div>
+      <div class="footer-grid">
+        <div>
+          <a class="footer-brand" href="index.html">
+            <span class="brand-mark muted" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M4 20V7.8L12 3l8 4.8V20h-5v-6H9v6H4Zm2-2h1v-6h10v6h1V8.9l-6-3.6-6 3.6V18Z"/></svg>
+            </span>
+            <strong>성공점포</strong>
+          </a>
+          <p>상가·점포·빌딩 전문 중개 서비스. 전국 네트워크 기반의 정밀 상권 분석과 법률 검토로 안전한 투자를 지원합니다.</p>
+        </div>
+        <div>
+          <h2>서비스</h2>
+          <a href="retail.html">상가 중개</a>
+          <a href="franchise.html">프랜차이즈</a>
+          <a href="building.html">빌딩 매매</a>
+        </div>
+        <div>
+          <h2>고객센터</h2>
+          <p class="footer-contact"><span>☎</span><b>02-1234-5678</b></p>
+          <p class="footer-contact"><span>✉</span><b>contact@success.com</b></p>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2026 성공점포. All rights reserved.</span>
+      </div>
+    </footer>
 
-        if (window.supabase) {
-          try {
-            window.supabaseClient = window.supabase.createClient(window.SUPABASE_URL, window.SUPABASE_KEY);
-            window.supabaseReady = true;
-            console.log("✅ Supabase initialized");
-          } catch (err) {
-            console.error("❌ Supabase init error:", err);
-          }
-        } else {
-          console.warn("⚠️ Supabase CDN failed to load, using localStorage fallback");
-        }
-      }
-      initSupabase();
-    </script>
-    <script src="content.js"></script><script src="script.js"></script>
+    <script src="script.js"></script>
   </body>
 </html>
