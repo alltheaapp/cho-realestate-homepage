@@ -271,33 +271,33 @@ svg {
 
 .hero-container {
   position: relative;
-  z-index: 1;
   display: flex;
   align-items: center;
-  max-width: 1360px;
-  margin: 0 auto;
   height: 100%;
 }
 
 .hero-inner {
   position: relative;
-  flex: 1;
+  z-index: 2;
+  max-width: 1180px;
+  margin: 0 auto;
   padding: 112px clamp(24px, 4vw, 48px) 96px;
 }
 
 .hero-image {
-  flex: 1;
+  position: absolute;
+  inset: 0;
+  z-index: 0;
   display: flex;
-  justify-content: center;
   align-items: center;
-  padding: 48px clamp(24px, 4vw, 48px);
+  justify-content: center;
+  overflow: hidden;
 }
 
 .hero-image img {
-  max-width: 100%;
-  height: auto;
-  border-radius: 12px;
-  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.3);
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .hero-badge {
