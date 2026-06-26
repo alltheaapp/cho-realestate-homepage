@@ -306,13 +306,14 @@ svg {
   gap: 10px;
   margin: 0 0 32px;
   padding: 11px 18px;
-  border: 1px solid rgba(255, 255, 255, 0.22);
+  border: 1px solid rgba(255, 255, 255, 0.3);
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.13);
-  color: rgba(255, 255, 255, 0.94);
+  background: rgba(0, 0, 0, 0.3);
+  color: rgba(255, 255, 255, 0.98);
   font-size: 14px;
   font-weight: 800;
   backdrop-filter: blur(12px);
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
 }
 
 .hero-badge span {
@@ -331,6 +332,7 @@ svg {
   font-weight: 950;
   line-height: 1.1;
   letter-spacing: 0;
+  text-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
 }
 
 .hero h1 em {
@@ -344,9 +346,10 @@ svg {
 .hero-lead {
   max-width: 720px;
   margin: 26px 0 0;
-  color: rgba(255, 255, 255, 0.82);
+  color: rgba(255, 255, 255, 0.95);
   font-size: 18px;
   line-height: 1.85;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
 }
 
 .hero-actions {
