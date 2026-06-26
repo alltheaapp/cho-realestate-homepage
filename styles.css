@@ -245,6 +245,22 @@ svg {
   background: linear-gradient(90deg, rgba(30, 58, 95, 0.95) 0%, rgba(45, 90, 140, 0.85) 50%, rgba(59, 130, 246, 0.75) 100%);
 }
 
+.hero::before {
+  position: absolute;
+  inset: 0;
+  content: "상권을 읽고\A계약을 연결합니다";
+  white-space: pre;
+  font-size: clamp(80px, 12vw, 240px);
+  font-weight: 900;
+  color: rgba(255, 255, 255, 0.08);
+  line-height: 1.2;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 0 clamp(24px, 8vw, 80px);
+  pointer-events: none;
+}
+
 .hero::after {
   position: absolute;
   inset: 0;
