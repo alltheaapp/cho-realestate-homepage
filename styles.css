@@ -242,9 +242,7 @@ svg {
   position: relative;
   min-height: 610px;
   overflow: hidden;
-  background:
-    linear-gradient(90deg, rgba(30, 58, 95, 0.82) 0%, rgba(45, 90, 140, 0.68) 48%, rgba(59, 130, 246, 0.42) 100%),
-    url("https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1800&q=82") center / cover;
+  background: linear-gradient(90deg, rgba(30, 58, 95, 0.95) 0%, rgba(45, 90, 140, 0.85) 50%, rgba(59, 130, 246, 0.75) 100%);
 }
 
 .hero::after {
@@ -255,12 +253,35 @@ svg {
   pointer-events: none;
 }
 
-.hero-inner {
+.hero-container {
   position: relative;
   z-index: 1;
-  max-width: 1180px;
+  display: flex;
+  align-items: center;
+  max-width: 1360px;
   margin: 0 auto;
+  height: 100%;
+}
+
+.hero-inner {
+  position: relative;
+  flex: 1;
   padding: 112px clamp(24px, 4vw, 48px) 96px;
+}
+
+.hero-image {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 48px clamp(24px, 4vw, 48px);
+}
+
+.hero-image img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 12px;
+  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.3);
 }
 
 .hero-badge {
