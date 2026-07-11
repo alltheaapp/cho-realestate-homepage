@@ -843,6 +843,97 @@ svg {
   font-size: 12px;
 }
 
+/* Company Info Section */
+.company-info-section {
+  padding: 60px clamp(20px, 4vw, 48px);
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.08) 0%, rgba(14, 165, 233, 0.04) 100%);
+}
+
+.company-info-container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.company-card {
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  border: 1px solid var(--line);
+}
+
+.card-header {
+  padding: 24px;
+  background: linear-gradient(135deg, var(--navy) 0%, var(--blue) 100%);
+  color: white;
+}
+
+.card-header h3 {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 900;
+}
+
+.card-body {
+  padding: 32px 24px;
+  display: grid;
+  gap: 20px;
+}
+
+.info-row {
+  display: grid;
+  grid-template-columns: 140px 1fr;
+  gap: 20px;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.info-row:last-child {
+  border-bottom: none;
+}
+
+.info-row strong {
+  color: var(--blue);
+  font-weight: 900;
+  font-size: 14px;
+}
+
+.info-row span {
+  color: var(--navy);
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.info-row a {
+  color: var(--blue);
+  text-decoration: none;
+  font-weight: 700;
+}
+
+.info-row a:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+  .company-info-section {
+    padding: 40px 20px;
+  }
+
+  .info-row {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .info-row strong {
+    font-size: 13px;
+  }
+
+  .info-row span {
+    font-size: 15px;
+  }
+}
+
 .listing-notice {
   display: flex;
   align-items: flex-start;
