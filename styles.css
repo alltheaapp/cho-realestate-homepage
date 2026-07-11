@@ -82,7 +82,7 @@ svg {
   height: 42px;
   place-items: center;
   border-radius: 8px;
-  background: linear-gradient(135deg, var(--blue), var(--blue-deep));
+  background: linear-gradient(135deg, var(--navy), var(--navy-deep));
   color: var(--white);
   font-size: 21px;
 }
@@ -279,9 +279,11 @@ svg {
 .hero-inner {
   position: relative;
   z-index: 2;
-  max-width: 1180px;
-  margin: 0 auto;
+  max-width: 680px;
+  margin: 0;
   padding: 112px clamp(24px, 4vw, 48px) 96px;
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.25) 60%, transparent 100%);
+  border-radius: 0;
 }
 
 .hero-image {
@@ -298,6 +300,7 @@ svg {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center;
 }
 
 .hero-badge {
@@ -357,6 +360,7 @@ svg {
   flex-wrap: wrap;
   gap: 14px;
   margin-top: 38px;
+  justify-content: flex-start;
 }
 
 .primary-button {
@@ -1563,22 +1567,95 @@ svg {
   }
 
   .hero {
-    min-height: 570px;
+    min-height: 380px;
+    position: relative;
+    background: linear-gradient(90deg, rgba(30, 58, 95, 0.95) 0%, rgba(45, 90, 140, 0.85) 50%, rgba(59, 130, 246, 0.75) 100%);
+  }
+
+  .hero-container {
+    flex-direction: row;
+    height: 100%;
+  }
+
+  .hero-image {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+  }
+
+  .hero-image img {
+    object-position: 100%;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
   }
 
   .hero-inner {
-    padding: 72px 22px 64px;
+    position: relative;
+    z-index: 2;
+    padding: 40px 22px 40px;
+    max-width: 45%;
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.4) 90%, transparent 100%);
+  }
+
+  @media (orientation: landscape) {
+    .hero {
+      min-height: 480px;
+      position: relative;
+    }
+
+    .hero-container {
+      flex-direction: row;
+      height: 100%;
+    }
+
+    .hero-image {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      order: 0;
+    }
+
+    .hero-image img {
+      object-position: right;
+    }
+
+    .hero-inner {
+      max-width: 35%;
+      padding: 48px 24px 40px;
+      order: 0;
+      background: linear-gradient(135deg, rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0.2) 70%, transparent 100%);
+    }
   }
 
   .hero h1 {
-    font-size: 42px;
+    font-size: 26px;
+    margin: 0;
+    line-height: 1.15;
   }
 
   .hero-lead {
-    font-size: 16px;
+    font-size: 11px;
+    margin: 10px 0 0;
+    line-height: 1.5;
   }
 
-  .hero-actions,
+  .hero-badge {
+    margin: 0 0 16px;
+    font-size: 12px;
+    padding: 8px 14px;
+  }
+
+  .hero-actions {
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 18px;
+  }
+
   .footer-bottom {
     flex-direction: column;
   }
@@ -1586,6 +1663,8 @@ svg {
   .primary-button,
   .secondary-button {
     width: 100%;
+    min-height: 44px;
+    font-size: 14px;
   }
 
   .process-grid,
