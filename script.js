@@ -55,7 +55,7 @@ renderReviews();
 contactForm?.addEventListener("submit", (event) => {
   event.preventDefault();
   const content = typeof getSiteContent === "function" ? getSiteContent() : {};
-  const email = content["contact.email"] || "contact@chorealestate.com";
+  const email = content["contact.email"] || "Mgstar0119@naver.com";
   const formData = new FormData(contactForm);
   const name = formData.get("name") || "";
   const phone = formData.get("phone") || "";

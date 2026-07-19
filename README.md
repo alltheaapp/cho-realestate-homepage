@@ -25,12 +25,12 @@ Cloudflare Pages에 바로 올릴 수 있는 정적 홈페이지입니다.
 
 ## 교체가 필요한 정보
 
-- 전화번호: `02-1234-5678`
-- 이메일: `contact@chorealestate.com`
-- 주소: `서울특별시 강남구 테헤란로 123 비즈니스 타워 4층`
-- 등록번호: `제00000-0000-00000호`
+- 전화번호: `010-2722-5304`
+- 이메일: `Mgstar0119@naver.com`
+- 주소: `서울 서초구 강남대로 617, 6층`
+- 등록번호: `제11650-2019-00264호`
 - 카카오 상담 링크: `https://pf.kakao.com/`
-- canonical URL: `https://csijak.mycafe24.com/`
+- canonical URL: `https://choestate.com/`
 
 ## 관리자 페이지
 
