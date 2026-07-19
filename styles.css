@@ -1124,8 +1124,17 @@ svg {
 
 .footer-grid p,
 .footer-grid a {
-  color: rgba(255, 255, 255, 0.72);
-  line-height: 1.75;
+  color: rgba(255, 255, 255, 0.86);
+  line-height: 1.6;
+  font-size: 15px;
+  letter-spacing: 0.2px;
+}
+
+.footer-grid p {
+  color: rgba(255, 255, 255, 0.86);
+  line-height: 1.6;
+  font-size: 15px;
+  letter-spacing: 0.2px;
 }
 
 .footer-grid a {
@@ -1149,7 +1158,9 @@ svg {
 }
 
 .license {
-  font-size: 13px;
+  font-size: 14px;
+  letter-spacing: 0.18px;
+  color: rgba(255,255,255,0.9);
 }
 
 .footer-contact {
@@ -1173,8 +1184,15 @@ svg {
   margin: 0 auto;
   padding: 30px clamp(24px, 3vw, 44px) 34px;
   border-top: 1px solid rgba(255, 255, 255, 0.12);
-  color: rgba(255, 255, 255, 0.48);
+  color: rgba(255, 255, 255, 0.62);
   font-size: 13px;
+  letter-spacing: 0.12px;
+}
+
+.footer-brand strong {
+  color: var(--white);
+  font-size: 20px;
+  letter-spacing: 0.2px;
 }
 
 .floating-actions {
